@@ -6,3 +6,5 @@ const int INF = 1e9;
 vector <ll> f, values;
 
 int main() {
+	return 0;
+}
