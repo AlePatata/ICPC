@@ -1,41 +1,39 @@
 #include <bits/stdc++.h>
-using namespace std;
 typedef long long ll;
-
-const ll INF = 1e9;
-
-int main() {
-	string s,p; cin >> s >> p;
-	int n = p.size();
-	vector <int> KMP(n);
-	KMP[0] = 0;
-	int l = 0;
-	for(int i = 1; i < n; i++){
-        int k = KMP[i-1]; 
-        while(p[k] != p[i] and k > 0){
-            k = KMP[k - 1];
+using namespace std;
+ 
+ 
+int match(string &s, string &t) {//buscamos string chico t dentro del string grande s
+    int n = t.size(), m = s.size();
+    int P[n]; //arreglo que contiene para cada i, el tamano del sufijo estricto dentro de s[1..i] que tambien es prefijo.
+    P[0] = 0;
+    for(int i = 1; i < n; i++){
+        int k = P[i-1]; 
+        while(t[k] != t[i] and k > 0){
+            k = P[k - 1];
         }
-        KMP[i] = (p[k] == p[i] ? k + 1 : 0);
+        P[i] = (t[k] == t[i] ? k + 1 : 0);
     }
-	
-
-	int c = 0, r = 0, i = 0;
-	while (i < s.size()) {
-		if (s[i] == p[r]) {
-			int k = i;
-			while(r < p.size() and k < s.size()) {
-				if (s[k] == p[r]) {
-					k++; r++;
-				} else {
-					r -= KMP[r];
-					break;
-				}
-			}  
-			if (r == p.size() and k <= s.size()) {
-				c++; r = 0;
-			} 
-		} i++;
-	} cout << c << '\n';
-
-	return 0;
+    // for(int i = 0; i < n; i++){
+    //     cerr << P[i] << ' ';
+    // }
+    // cerr << endl;
+    int ans = 0, k = 0; 
+    for(int j = 0; j < m; j++){
+        while(t[k] != s[j] and k > 0){
+            k = P[k - 1];
+        }
+        if(t[k] == s[j] and ++k == n){
+            k = P[n - 1], ans++;
+        }
+    }
+    return ans; //retorna la cantidad de veces que aparece
+}
+ 
+int main(){
+	ios::sync_with_stdio(false); cin.tie(0);
+    string s, t;
+    cin >> s >> t;
+    int r = match(s, t);
+    cout << r << endl;
 }
